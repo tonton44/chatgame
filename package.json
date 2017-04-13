@@ -1,0 +1,20 @@
+{
+  "name": "chatgame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anthony",
+  "license": "ISC",
+  "dependencies": {
+    "ent": "^2.2.0",
+    "express": "^4.15.2",
+    "jquery": "^3.2.1",
+    "nodemon": "^1.11.0",
+    "socket.io": "^1.7.3",
+    "uuid": "^3.0.1"
+  }
+}
