@@ -24,16 +24,27 @@ const users = [];
 io.on('connection', (socket) => {
   console.log('User (' + socket.id + ') vient de se connecter');
 
+
   // Ajout d'un connecté 
   const user = {
     id: socket.id,
     // Nom au hasard dans la liste des noms par défaut
-    nickname: settings.defaultNicknames[Math.floor(Math.random() * settings.defaultNicknames.length)]
+    nickname: settings.defaultNicknames[Math.floor(Math.random() * settings.defaultNicknames.length)],
+    //position initiale du user à l'écran
+    position: {
+      x: Math.random() * 100,
+      y: Math.random() * 100
+    }
   };
   users.push(user);
 
   // Diffusion de la liste de connectés à tout le monde
   io.emit('users', users);
+
+  socket.on('nick', (nickname) => {
+    user.nickname = nickname;
+    io.emit('users', users);
+  })
 
   // Déconnexion de l'utilisateur
   socket.on('disconnect', () => {
@@ -44,19 +55,21 @@ io.on('connection', (socket) => {
     io.emit('users', users);
   });
 
-  // Diffusion de la liste de connectés à tout le mon
-
   // Réception d'un nouveau message
   socket.on('msg', (txt) => {
+    // Nouvel objet message avec un id et une date
+    const message = {
+      id: uuid(),
+      userId: user.id,
+      date: new Date().getTime(),
+      txt
+    };
     // Diffusion du message auprès de tous les connectés
-    io.emit('msg', txt);
+    io.emit('msg', message);
   });
-  const message = {
-    id: uuid(),
-    userId: user.id,
-    date : new Date().getTime(),
-    txt: txt
-    // Nom au hasard dans la liste des noms par défaut]
-  };
-  io.emit('messages', messages);
+  socket.on('move', (position) => {
+    user.position = position;
+    io.emit('users', users);
+    // Diffusion du message auprès de tous les connectés
+  });
 });
